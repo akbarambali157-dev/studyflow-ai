@@ -476,47 +476,54 @@ AI-generated material can contain errors. The interface should encourage student
 
 ## 9. API contract and error handling
 
-The initial implementation currently exposes two routes:\n\n- `POST /api/documents`: multipart form upload with a `file` field. Accepts PDF, DOCX, and TXT files up to 8 MB and returns extracted text, filename, character count, and a truncation flag. The extraction limit is 80,000 characters.\n- `POST /api/ai`: JSON task request. The supported task values are `explain`, `summarise`, `quiz`, and `chat`.\n\nThe AI route currently accepts this request shape:
+The initial implementation exposes two routes:
 
-A task-dispatch request could use this shape:
+- `POST /api/documents`: multipart form upload with a `file` field. Accepts PDF, DOCX, and TXT files up to 8 MB and returns extracted text, filename, character count, and a truncation flag. The extraction limit is 80,000 characters.
+- `POST /api/ai`: JSON task request. Supported task values are `explain`, `summarise`, `quiz`, and `chat`.
+
+### AI request
 
 ```json
 {
   "task": "explain",
   "sourceText": "The lecture material goes here...",
   "topic": "Core concept",
-  "options": {
-    "detail": "standard"
-  }
+  "questionCount": 8,
+  "difficulty": "medium",
+  "question": ""
 }
 ```
 
-Possible task identifiers:
-- `explain`
-- `summarise`
-- `quiz`
-- `practice`
-- `chat`
+Fields:
+- `task`: required task identifier.
+- `sourceText`: required source text, between 30 and 80,000 characters.
+- `topic`: optional topic or focus area.
+- `questionCount`: optional quiz length, 3–20; defaults to 8.
+- `difficulty`: optional `easy`, `medium`, or `hard`; defaults to `medium`.
+- `question`: optional student question, required in practice for the `chat` task.
 
-A successful response should use a predictable envelope, for example:
+### Success response
 
 ```json
 {
   "success": true,
   "data": {
-    "task": "explain",\n    "result": "Generated learning material"
+    "task": "explain",
+    "result": "Generated learning material"
   }
 }
 ```
 
-An error response should be equally predictable:
+For the `quiz` task, `result` is a structured object containing a title and validated multiple-choice questions. For other tasks, `result` is text.
+
+### Error response
 
 ```json
 {
   "success": false,
   "error": {
     "code": "VALIDATION_ERROR",
-    "message": "Please provide valid study material."
+    "message": "Check your study material and request, then try again."
   }
 }
 ```
@@ -529,12 +536,10 @@ Suggested error categories:
 - `AI_NOT_CONFIGURED`: missing provider key.
 - `AI_PROVIDER_ERROR`: provider request failed.
 - `AI_OUTPUT_INVALID`: response failed schema validation.
-- `RATE_LIMITED`: request limit reached.
+- `RATE_LIMITED`: request limit reached (rate limiting is not implemented yet).
 - `INTERNAL_ERROR`: unexpected server error.
 
 Do not return stack traces, secret values, or raw provider credentials to the browser.
-
----
 
 ## 10. Document processing requirements
 
