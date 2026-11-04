@@ -203,7 +203,7 @@ Unless a persistence layer is deliberately added, document context and chat hist
 | Components | shadcn/ui (where useful) | Accessible, reusable interface primitives |
 | AI provider | Google Gemini API | Explanations, revision notes, quizzes, and study chat |
 | AI SDK | Official Google Gen AI SDK | Server-side model requests |
-| PDF extraction | PDF.js or a compatible server-side parser | Extract text from text-based PDFs |
+| PDF extraction | pdf-parse | Extract text from text-based PDFs in the Node.js route |
 | DOCX extraction | Mammoth | Extract text from Word documents |
 | Validation | Zod | Validate API inputs and structured model outputs |
 | Deployment | Vercel | Hosting, server-side functions, and preview deployments |
@@ -432,7 +432,7 @@ If a script is not defined, do not assume it ran. Add the appropriate script and
 
 ### Server-side provider client
 
-Create one shared Gemini client in `lib/ai/client.ts`. It should:
+The initial implementation currently lives in `lib/ai.ts`. If the AI layer grows, it can be split into modules such as `lib/ai/client.ts`, `lib/ai/prompts.ts`, and `lib/ai/schemas.ts`. The provider client should:
 - Read the API key from server environment variables.
 - Fail with a helpful configuration error when the key is missing.
 - Avoid creating a new client for every small helper call when reuse is appropriate.
@@ -476,7 +476,7 @@ AI-generated material can contain errors. The interface should encourage student
 
 ## 9. API contract and error handling
 
-The first implementation may use one task-dispatch route or separate routes. Whichever design is chosen, document it here and keep the contract consistent.
+The initial implementation currently exposes two routes:\n\n- `POST /api/documents`: multipart form upload with a `file` field. Accepts PDF, DOCX, and TXT files up to 8 MB and returns extracted text, filename, character count, and a truncation flag. The extraction limit is 80,000 characters.\n- `POST /api/ai`: JSON task request. The supported task values are `explain`, `summarise`, `quiz`, and `chat`.\n\nThe AI route currently accepts this request shape:
 
 A task-dispatch request could use this shape:
 
@@ -504,7 +504,7 @@ A successful response should use a predictable envelope, for example:
 {
   "success": true,
   "data": {
-    "content": "Generated learning material"
+    "task": "explain",\n    "result": "Generated learning material"
   }
 }
 ```
@@ -688,7 +688,7 @@ This table is the source of truth for project progress. Update it whenever code 
 | Area | Status | Notes |
 |---|---|---|
 | Repository | Created | Public GitHub repository |
-| Product specification | Documented | This README |
+| Product specification | Documented | This README and submission notes |
 | Next.js application scaffold | Implemented, unverified | App Router, TypeScript, Tailwind CSS 4 configuration and root page are committed |
 | Responsive dashboard | Implemented, unverified | Initial responsive workspace UI is committed |
 | Document upload | Implemented, unverified | Upload UI and 8 MB server-side limit are committed |
