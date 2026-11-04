@@ -689,20 +689,20 @@ This table is the source of truth for project progress. Update it whenever code 
 |---|---|---|
 | Repository | Created | Public GitHub repository |
 | Product specification | Documented | This README |
-| Next.js application scaffold | Pending | Initial code setup |
-| Responsive dashboard | Pending | |
-| Document upload | Pending | PDF, DOCX, TXT |
-| PDF text extraction | Pending | Validate Vercel compatibility |
-| DOCX text extraction | Pending | |
-| Gemini server integration | Pending | Server-side key only |
-| Simplifier | Pending | |
-| Revision Studio | Pending | |
-| Quiz Generator | Pending | Structured output + validation |
-| Practice Exams | Pending | Scoring and timer |
-| Study Chat | Pending | Document-grounded Q&A |
-| Automated tests | Pending | |
-| Vercel deployment | Pending | |
-| Hackathon demo | Pending | |
+| Next.js application scaffold | Implemented, unverified | App Router, TypeScript, Tailwind CSS 4 configuration and root page are committed |
+| Responsive dashboard | Implemented, unverified | Initial responsive workspace UI is committed |
+| Document upload | Implemented, unverified | Upload UI and 8 MB server-side limit are committed |
+| PDF text extraction | Implemented, unverified | Uses pdf-parse; must be tested in local and Vercel Node runtimes |
+| DOCX text extraction | Implemented, unverified | Uses Mammoth raw-text extraction |
+| Gemini server integration | Implemented, unverified | Server route and @google/genai integration committed; requires a real key to test |
+| Simplifier | Implemented, unverified | Task prompt and UI flow committed |
+| Revision Studio | Implemented, unverified | Task prompt and UI flow committed |
+| Quiz Generator | Implemented, unverified | JSON generation, Zod validation, interactive answer selection and scoring committed |
+| Practice Exams | Pending | Dedicated timed exam flow remains future work |
+| Study Chat | In progress | Single-turn document-grounded question flow committed; multi-turn history is not implemented |
+| Automated tests | Pending | Test suite and CI checks still need to be added and run |
+| Vercel deployment | Pending | Repository is not yet connected/deployed to Vercel |
+| Hackathon demo | Pending | Requires API key, deployment, and end-to-end verification |
 
 **Status definitions**
 - **Pending:** not implemented.
@@ -718,23 +718,23 @@ Do not mark a feature Verified solely because its page renders.
 ## 15. Development roadmap
 
 ### Phase 1 — Foundation
-- [ ] Create the Next.js App Router project.
-- [ ] Configure TypeScript, Tailwind CSS, linting, and formatting.
-- [ ] Create the shared application layout and responsive navigation.
-- [ ] Build the dashboard and clear empty states.
+- [x] Create the Next.js App Router project.
+- [x] Configure TypeScript, Tailwind CSS, and lint configuration (verify with install/build).
+- [x] Create the shared application layout and initial responsive navigation.
+- [x] Build the initial dashboard and empty states.
 - [ ] Add environment variable validation.
 
 ### Phase 2 — Document pipeline
-- [ ] Add PDF, DOCX, and TXT validation.
-- [ ] Implement text extraction.
+- [x] Add PDF, DOCX, and TXT upload validation.
+- [x] Implement initial PDF, DOCX, and TXT text extraction.
 - [ ] Add text preview and document removal.
 - [ ] Enforce size and extracted-text limits.
 - [ ] Test document processing locally and on Vercel.
 
 ### Phase 3 — AI foundation
-- [ ] Add the server-only Gemini client.
-- [ ] Add task-specific prompt templates.
-- [ ] Add request and response schemas.
+- [x] Add the server-only Gemini client.
+- [x] Add initial task-specific prompt templates.
+- [x] Add request and quiz response schemas.
 - [ ] Add safe error handling and loading states.
 - [ ] Verify that the key never reaches the client.
 
