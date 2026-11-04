@@ -44,7 +44,7 @@ export async function runStudyTask(rawInput: unknown) {
   if (!text) throw new Error("AI_EMPTY_RESPONSE");
 
   if (input.task === "quiz") {
-    const cleaned = text.replace(/^\`\`\`(?:json)?\s*/i, "").replace(/\s*\`\`\`$/, "");
+    const cleaned = text.replace(/^`{3}(?:json)?\s*/i, "").replace(/\s*`{3}$/, "");
     let parsed: unknown;
     try {
       parsed = JSON.parse(cleaned);
@@ -60,8 +60,15 @@ export async function runStudyTask(rawInput: unknown) {
         explanation: z.string(),
       })).min(1),
     });
-    const quiz = quizSchema.parse(parsed);
-    return { task: input.task, result: quiz };
+    try {
+      const quiz = quizSchema.parse(parsed);
+      if (quiz.questions.length !== input.questionCount) {
+        throw new Error("AI_OUTPUT_INVALID");
+      }
+      return { task: input.task, result: quiz };
+    } catch {
+      throw new Error("AI_OUTPUT_INVALID");
+    }
   }
 
   return { task: input.task, result: text };
