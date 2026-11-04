@@ -674,6 +674,10 @@ Test:
 8. Try an unsupported or unreadable file and confirm a useful error appears.
 9. Repeat the key flow on a narrow mobile viewport.
 
+### Current verification note
+
+The initial application source and documentation have been committed to GitHub. A dependency installation, TypeScript check, lint run, production build, and deployed end-to-end test have **not** yet been performed in a Codespaces or local Node.js environment. Treat the current scaffold as implemented but unverified until those checks pass. The repository does not yet include a lockfile; run `npm install` in Codespaces and commit the generated `package-lock.json` before relying on reproducible installs.
+
 ### Quality gates
 
 Before considering the MVP ready:
